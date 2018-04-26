@@ -1,0 +1,27 @@
+<div class="notify full-screen">
+  <div class="icon">
+    <nz-badge [nzDot]="notifies.length > 0">
+      <ng-template #content><i class="anticon anticon-notification"></i></ng-template>
+    </nz-badge>
+  </div>
+  <div class="notify-container">
+    <nz-carousel nzVertical [nzDots]="false" [nzAutoPlay]="true">
+      <div nz-carousel-content *ngFor="let notify of notifies">
+        <ng-container *ngIf="notify.assetName">
+          资产 : &nbsp; &nbsp;<span style="color: blue">{{notify.assetName}}__{{notify.assetCode}}</span>
+          剩余
+          <span style="color: red;font-size: 14px">{{notify.days}}</span>
+          天到期
+        </ng-container>
+        <ng-container *ngIf="notify.officeSupName">
+          办公用品 :&nbsp; &nbsp;  <span style="color: blue">{{notify.officeSupName}}__{{notify.purchaseBatch}}</span>
+          库存剩余
+          <span style="color: red;font-size: 14px">{{notify.inventory}}</span>
+          件
+        </ng-container>
+      </div>
+    </nz-carousel>
+  </div>
+</div>
+
+

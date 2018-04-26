@@ -1,0 +1,23 @@
+<div class="main-container">
+  <section class="header">
+    <div class="logo">
+    </div>
+    <div class="user-bar">
+      <wms-user-bar></wms-user-bar>
+    </div>
+  </section>
+  <section class="body">
+    <div class="menu">
+      <wms-menu [menus]="menus" [subUserType]="userType" [currentMenu]="currentMenu" (currentMenuChange)="change($event)"></wms-menu>
+    </div>
+    <div class="content">
+      <div class="navigation">
+        <wms-breadcrumb></wms-breadcrumb>
+      </div>
+      <div class="router-content">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+
+  </section>
+</div>

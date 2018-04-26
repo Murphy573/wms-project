@@ -1,0 +1,242 @@
+<div nz-row class="OfficeSup-list full-parent">
+  <div nz-row class="search-bar">
+    <form nz-form [formGroup]="searchGroup" [nzLayout]="'inline'"  (ngSubmit)="_search('search')">
+      <div nz-row [nzGutter]="20">
+        <div nz-col [nzSpan]="3">
+          <div nz-row>
+            <div nz-form-control nz-col [nzSpan]="24">
+              <nz-input [nzSize]="'small'" [nzPlaceHolder]="'办公用品名称'" formControlName="name"></nz-input>
+            </div>
+          </div>
+        </div>
+        <div nz-col [nzSpan]="3">
+          <div nz-row>
+            <div nz-form-control nz-col [nzSpan]="24">
+              <nz-select  [nzSize]="'small'" formControlName="statusId">
+                <nz-option [nzLabel]="'全部状态'" [nzValue]="''"></nz-option>
+                <nz-option *ngFor="let status of statusList" [nzLabel]="status?.statusName" [nzValue]="status?.statusId"></nz-option>
+              </nz-select>
+            </div>
+          </div>
+        </div>
+        <div nz-col [nzSpan]="3">
+          <div nz-row>
+            <div nz-form-control nz-col [nzSpan]="24">
+              <nz-select  [nzSize]="'small'" formControlName="typeId">
+                <nz-option [nzLabel]="'全部类型'" [nzValue]="''"></nz-option>
+                <nz-option *ngFor="let type of typeList" [nzLabel]="type?.typeName" [nzValue]="type?.typeId"></nz-option>
+              </nz-select>
+            </div>
+          </div>
+        </div>
+        <div nz-col [nzSpan]="6">
+          <div nz-form-item nz-row [nzGutter]="0">
+            <div nz-form-control>
+              <div nz-col [nzSpan]="11">
+                <div nz-row>
+                  <div nz-form-control>
+                    <nz-datepicker formControlName="startTime" [nzSize]="'small'" [nzFormat]="'YYYY-MM-DD'" [nzPlaceHolder]="'起始日期'"></nz-datepicker>
+                  </div>
+                </div>
+              </div>
+              <div nz-col [nzSpan]="1">
+                <p nz-form-split>-</p>
+              </div>
+              <div nz-col [nzSpan]="11">
+                <div nz-row>
+                  <div>
+                    <div nz-form-control>
+                      <nz-datepicker formControlName="endTime" [nzSize]="'small'" [nzFormat]="'YYYY-MM-DD'"  [nzPlaceHolder]="'结束日期'"></nz-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div nz-col [nzSpan]="2">
+          <div nz-row>
+            <div nz-form-control nz-col [nzSpan]="24">
+              <button nz-button [nzType]="'primary'" [nzSize]="'small'">搜索</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+
+  <div nz-row class="operate-bar" *ngIf="userType==='SYSTEM_ADMIN'">
+    <div nz-col [nzSpan]="2" class="pull-left">
+      <button nz-button [nzType]="'danger'" (click)="deleteOfficeSup()" [disabled]="checkedInfo.selectedList.length === 0 ">
+        <span>删除</span>
+      </button>
+    </div>
+    <div nz-col [nzSpan]="2" class="pull-right">
+      <button nz-button [nzType]="'primary'" routerLink="OfficeSup-add" [queryParams]="{userType:userType}">
+        <span>新增办公用品</span>
+      </button>
+    </div>
+  </div>
+
+
+  <div nz-row class="table-container full-width">
+    <nz-table #nzTable [nzAjaxData]="OfficeSupList"
+              [(nzPageIndex)]="pageParam.currentPage" (nzPageIndexChange)="queryOfficeSupList();"
+              [nzTotal]="pageParam.totalCount" [nzPageSize]="pageParam.pageSize" [nzShowTotal]="true"
+              [nzBordered]="true" [nzSize]="'small'" [nzLoading]="_loading">
+      <thead nz-thead>
+      <tr>
+        <th nz-th nzCheckbox *ngIf="userType==='SYSTEM_ADMIN'">
+          <label nz-checkbox [(ngModel)]="checkedInfo.allCheck" [nzIndeterminate]="checkedInfo.indeterminate" (ngModelChange)="_checkAll($event)">
+          </label>
+        </th>
+        <th nz-th><span>序号</span></th>
+        <th nz-th><span>名称</span></th>
+        <!--<th nz-th><span>编号</span></th>-->
+        <th nz-th><span>类别</span></th>
+        <th nz-th><span>价格</span></th>
+        <th nz-th><span>数量</span></th>
+        <th nz-th><span>总价</span></th>
+        <th nz-th><span>库存</span></th>
+        <th nz-th><span>状态</span></th>
+        <th nz-th><span>负责人</span></th>
+        <th nz-th><span>入库时间</span></th>
+        <th nz-th *ngIf="userType==='SYSTEM_ADMIN'"><span>操作</span></th>
+      </tr>
+      </thead>
+      <tbody nz-tbody>
+      <tr nz-tbody-tr *ngFor="let data of nzTable.data; let _index = index;">
+        <td nz-td nzCheckbox *ngIf="userType==='SYSTEM_ADMIN'">
+          <label nz-checkbox [(ngModel)]="data.checked" (ngModelChange)="_checkOne($event)">
+          </label>
+        </td>
+        <td nz-td>
+          {{_index + 1}}
+        </td>
+        <td nz-td>
+          <a [routerLink]="['./OfficeSup-edit']" [queryParams]="{officeSupId: data.officeSupId,userType:userType}">{{data.name}}</a>
+        </td>
+        <!--<td nz-td>{{data.assetCode}}</td>-->
+        <td nz-td>{{data.typeName}}</td>
+        <td nz-td>{{data.price}}</td>
+        <td nz-td>{{data.amount}}</td>
+        <td nz-td>{{data.totalPrice}}</td>
+        <td nz-td>{{data.inventory}}</td>
+        <td nz-td>{{data.statusName}}</td>
+        <td nz-td>{{data.chargePerson}}</td>
+        <td nz-td>{{data.inputTime|date: 'yyyy-MM-dd'}}</td>
+        <td nz-td *ngIf="userType==='SYSTEM_ADMIN'">
+          <div class="td-operation" style="justify-content: flex-start">
+          <!--<div class="td-operation">-->
+            <!--<a>更新</a>-->
+            <!--<a>删除</a>-->
+            <!--<a>打印条码</a>-->
+            <a style="margin-left: 20px;" (click)="openReceiveModal(data);" *ngIf="data.inventory!==0 && data.statusId === '3'">领用</a>
+            <a style="margin-left:20px" (click)="openOfficeSupDetail(data.officeSupId);">办公用品明细</a>
+          <!--</div>-->
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </div>
+
+  <nz-modal *ngIf="isBorrowModalVisible" [nzVisible]="isBorrowModalVisible"
+            [nzConfirmLoading]="isBorrowConfirmLoading"
+            [nzTitle]="'领用'" [nzContent]="borrowContent"
+            [nzFooter]="borrowFooter"
+            (nzOnCancel)="closeReceiveModal()"
+
+  >
+    <ng-template #borrowContent>
+        <div nz-form-item nz-row>
+            <div nz-form-label nz-col [nzSpan]="4">
+              <label nz-form-item-required>领用人</label>
+            </div>
+            <div nz-form-control nz-col [nzSpan]="13" nzHasFeedback [nzValidateStatus]="OfficeSupValidateStatus(name.dirty)">
+              <nz-input [nzSize]="'large'"  #name="ngModel" [(ngModel)]="OfficeSupReceiveObj.user" [nzType]="'text'"></nz-input>
+            </div>
+        </div>
+
+        <div nz-form-item nz-row>
+            <div nz-form-label nz-col [nzSpan]="4">
+              <label nz-form-item-required>领用数量</label>
+            </div>
+            <div nz-form-control nz-col [nzSpan]="4">
+              <nz-input-number  [(ngModel)]="OfficeSupReceiveObj.number" [nzMin]="1" [nzSize]="'large'" [nzFormatter]="formatterInt" [nzParser]="parserInt" [nzStep]="1"></nz-input-number>
+            </div>
+
+            <div nz-form-label nz-col [nzSpan]="4">
+              <label>领用日期</label>
+            </div>
+            <div nz-form-control nz-col [nzSpan]="5">
+              <nz-datepicker  [(ngModel)]="OfficeSupReceiveObj.receiveTime" [nzSize]="'large'" [nzFormat]="'YYYY-MM-DD'" [nzPlaceHolder]="'请选择领用日期'"></nz-datepicker>
+            </div>
+        </div>
+
+        <div nz-form-item nz-row>
+            <div nz-col [nzSpan]="4" nz-form-label>
+              <label>备注</label>
+            </div>
+            <div nz-col [nzSpan]="13" nz-form-control>
+              <nz-input [(ngModel)]="OfficeSupReceiveObj.remark" [nzRows]="3" [nzType]="'textarea'" [nzPlaceHolder]="'请输入备注'" [nzSize]="'large'">
+              </nz-input>
+            </div>
+        </div>
+
+    </ng-template>
+
+    <ng-template #borrowFooter>
+      <button nz-button [nzType]="'default'" [nzSize]="'large'" (click)="closeReceiveModal()">
+        返 回
+      </button>
+      <button nz-button [nzType]="'primary'" [nzSize]="'large'" [disabled]="!OfficeSupReceiveObj.user" (click)="OfficeSupReceiveSubmit($event)" [nzLoading]="isBorrowConfirmLoading">
+        提 交
+      </button>
+    </ng-template>
+  </nz-modal>
+
+  <nz-modal *ngIf="isOfficeDetailVisible" [nzVisible]="isOfficeDetailVisible"
+            [nzTitle]="'办公用品明细'" [nzContent]="officeSupContent" [nzWidth]="800"
+            [nzFooter]="officeSupFooter"
+            (nzOnCancel)="closeOfficeDetailModal()"
+
+  >
+    <ng-template #officeSupContent>
+      <div nz-row class="table-container full-width">
+        <nz-table #nzTable [nzAjaxData]="officeSupDetailList"
+                  [nzShowTotal]="true"
+                  [nzIsPagination]="false"
+                  [nzBordered]="true" [nzSize]="'small'">
+          <thead nz-thead>
+          <tr>
+            <th nz-th><span>序号</span></th>
+            <th nz-th><span>领用数量</span></th>
+            <th nz-th><span>领用人</span></th>
+            <th nz-th><span>操作时间</span></th>
+            <th nz-th><span>备注</span></th>
+          </tr>
+          </thead>
+          <tbody nz-tbody>
+          <tr nz-tbody-tr *ngFor="let data of nzTable.data; let _index = index;">
+            <td nz-td>
+              {{_index + 1}}
+            </td>
+            <td nz-td>{{data.number}}</td>
+            <td nz-td>{{data.user}}</td>
+            <td nz-td>{{data.receiveTime|date: 'yyyy-MM-dd'}}</td>
+            <td nz-td>{{data.remark}}</td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </div>
+
+
+    </ng-template>
+
+    <ng-template #officeSupFooter>
+    </ng-template>
+  </nz-modal>
+
+</div>

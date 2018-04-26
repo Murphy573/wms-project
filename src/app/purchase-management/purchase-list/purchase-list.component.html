@@ -1,0 +1,134 @@
+<div nz-row class="purchase-list full-parent">
+  <div nz-row class="search-bar">
+    <form nz-form [formGroup]="searchGroup" [nzLayout]="'inline'"  (ngSubmit)="_search('search')" novalidate>
+      <div nz-row [nzGutter]="20">
+        <div nz-col [nzSpan]="3">
+          <div nz-row>
+            <div nz-form-control nz-col [nzSpan]="24">
+              <nz-input [nzSize]="'small'" [nzPlaceHolder]="'采购名称'" formControlName="name"></nz-input>
+            </div>
+          </div>
+        </div>
+        <div nz-col [nzSpan]="3">
+          <div nz-row>
+            <div nz-form-control nz-col [nzSpan]="24">
+              <nz-input [nzSize]="'small'" [nzPlaceHolder]="'采购人'" formControlName="purchaser"></nz-input>
+            </div>
+          </div>
+        </div>
+        <div nz-col [nzSpan]="3">
+          <div nz-row>
+            <div nz-form-control nz-col [nzSpan]="24">
+              <nz-input [nzSize]="'small'" [nzPlaceHolder]="'供应商'" formControlName="supplier"></nz-input>
+            </div>
+          </div>
+        </div>
+        <div nz-col [nzSpan]="3">
+          <div nz-row>
+            <div nz-form-control nz-col [nzSpan]="24">
+              <nz-select  [nzSize]="'small'" formControlName="typeId">
+                <nz-option [nzLabel]="'全部类型'" [nzValue]="''"></nz-option>
+                <nz-option *ngFor="let type of typeList" [nzLabel]="type?.typeName" [nzValue]="type?.typeId"></nz-option>
+              </nz-select>
+            </div>
+          </div>
+        </div>
+        <div nz-col [nzSpan]="6">
+          <div nz-form-item nz-row [nzGutter]="0">
+            <div nz-form-control>
+              <div nz-col [nzSpan]="11">
+                <div nz-row>
+                  <div nz-form-control>
+                    <nz-datepicker formControlName="startTime" [nzSize]="'small'" [nzFormat]="'YYYY-MM-DD'" [nzPlaceHolder]="'采购起始日期'"></nz-datepicker>
+                  </div>
+                </div>
+              </div>
+              <div nz-col [nzSpan]="1">
+                <p nz-form-split>-</p>
+              </div>
+              <div nz-col [nzSpan]="11">
+                <div nz-row>
+                  <div>
+                    <div nz-form-control>
+                      <nz-datepicker formControlName="endTime" [nzSize]="'small'" [nzFormat]="'YYYY-MM-DD'"  [nzPlaceHolder]="'采购结束日期'"></nz-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div nz-col [nzSpan]="2">
+          <div nz-row>
+            <div nz-form-control nz-col [nzSpan]="24">
+              <button nz-button [nzType]="'primary'" [nzSize]="'small'">搜索</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div nz-row class="operate-bar" *ngIf="userType==='SYSTEM_ADMIN'">
+    <div nz-col [nzSpan]="2" class="pull-left">
+      <button nz-button [nzType]="'danger'" (click)="deletePurchase()" [disabled]="checkedInfo.selectedList.length === 0 ">
+        <span>删除</span>
+      </button>
+    </div>
+    <div nz-col [nzSpan]="2" class="pull-right">
+      <button nz-button [nzType]="'primary'" routerLink="purchase-add" [queryParams]="{userType:userType}">
+        <span>新增采购</span>
+      </button>
+    </div>
+  </div>
+  <div nz-row class="table-container full-width">
+    <nz-table #nzTable [nzAjaxData]="purchaseList"
+              [(nzPageIndex)]="pageParam.currentPage" (nzPageIndexChange)="queryPurchaseList();"
+              [nzTotal]="pageParam.totalCount" [nzPageSize]="pageParam.pageSize" [nzShowTotal]="true"
+              [nzBordered]="true" [nzSize]="'small'" [nzLoading]="_loading">
+      <thead nz-thead>
+      <tr>
+        <th nz-th nzCheckbox>
+          <label nz-checkbox [(ngModel)]="checkedInfo.allCheck" [nzIndeterminate]="checkedInfo.indeterminate" (ngModelChange)="_checkAll($event)">
+          </label>
+        </th>
+        <th nz-th><span>序号</span></th>
+        <th nz-th><span>名称</span></th>
+        <th nz-th><span>类别</span></th>
+        <th nz-th><span>单价</span></th>
+        <th nz-th><span>数量</span></th>
+        <th nz-th><span>总价</span></th>
+        <th nz-th><span>采购人（部门）</span></th>
+        <th nz-th><span>结算方式</span></th>
+        <th nz-th><span>付款周期</span></th>
+        <th nz-th><span>供应商</span></th>
+        <th nz-th><span>入库时间</span></th>
+      </tr>
+      </thead>
+      <tbody nz-tbody>
+      <tr nz-tbody-tr *ngFor="let data of nzTable.data; let _index = index;">
+        <td nz-td nzCheckbox>
+          <label nz-checkbox [(ngModel)]="data.checked" (ngModelChange)="_checkOne($event)">
+          </label>
+        </td>
+        <td nz-td>
+          {{_index + 1}}
+        </td>
+        <td nz-td>
+          <a [routerLink]="['./purchase-edit']" [queryParams]="{purchaseBatch: data.purchaseBatch,userType:userType}">{{data.purchaseName}}</a>
+        </td>
+        <td nz-td>{{data.typeName}}</td>
+        <td nz-td>{{data.purchasePrice}}</td>
+        <td nz-td>{{data.amount}}</td>
+        <td nz-td>{{data.totalPrice}}</td>
+        <td nz-td>{{data.purchaser}}</td>
+        <td nz-td>{{data.supplierInfoVO.paymentMethodName}}</td>
+
+        <td nz-td>{{data.supplierInfoVO.paymentPeriodName}}</td>
+        <td nz-td>{{data.supplierInfoVO.supplierName}}</td>
+        <td nz-td>{{data.inputTime|date: 'yyyy-MM-dd'}}</td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </div>
+
+</div>

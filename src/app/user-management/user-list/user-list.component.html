@@ -1,0 +1,20 @@
+<div nz-row class="user-list full-parent">
+  <div nz-row class="search-bar">
+    <wms-user-list-search (startSearch)="setSearchParams($event);"></wms-user-list-search>
+  </div>
+  <div nz-row class="operate-bar">
+    <div nz-col [nzSpan]="2" class="pull-left">
+      <button nz-button [nzType]="'danger'" (click)="deleteUsers();" [disabled]="!selectedUserIds || selectedUserIds.length === 0">
+        <span>删除</span>
+      </button>
+    </div>
+    <div nz-col [nzSpan]="2" class="pull-right">
+      <button nz-button [nzType]="'primary'" (click)="toAddUser();">
+        <span>新增用户</span>
+      </button>
+    </div>
+  </div>
+  <div nz-row class="table-container full-width">
+    <wms-user-list-table [queryParams]="searchParams" (toEdit)="toEditUser($event)" (selected)="refreshSelected($event)"></wms-user-list-table>
+  </div>
+</div>

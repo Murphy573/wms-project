@@ -1,0 +1,40 @@
+<div nz-row class="full-parent">
+  <nz-table #nzTable [nzAjaxData]="projectMaterialList"
+            [(nzPageIndex)]="pageParam.currentPage" (nzPageIndexChange)="queryProjectMaterialList();"
+            [nzTotal]="pageParam.totalCount" [nzPageSize]="pageParam.pageSize" [nzShowTotal]="true"
+            [nzBordered]="true" [nzSize]="'small'" [nzLoading]="_loading">
+    <thead nz-thead>
+    <tr>
+      <th nz-th><span>序号</span></th>
+      <th nz-th><span>项目名称</span></th>
+      <th nz-th><span>物资名称</span></th>
+      <th nz-th><span>类别</span></th>
+      <th nz-th><span>单价</span></th>
+      <th nz-th><span>数量</span></th>
+      <th nz-th><span>总价</span></th>
+      <th nz-th><span>状态</span></th>
+      <th nz-th><span>归属</span></th>
+      <th nz-th><span>来源</span></th>
+      <th nz-th><span>入库时间</span></th>
+    </tr>
+    </thead>
+    <tbody nz-tbody>
+    <tr nz-tbody-tr *ngFor="let data of nzTable.data; let _index = index;">
+      <td nz-td>
+        {{_index + 1}}
+      </td>
+      <td nz-td>{{data.projectName}}</td>
+      <td nz-td>{{data.name}}</td>
+      <td nz-td>{{data.typeName}}</td>
+      <td nz-td>{{data.price}}</td>
+      <td nz-td>{{data.amount}}</td>
+      <td nz-td>{{data.totalPrice}}</td>
+      <td nz-td>{{data.status}}</td>
+      <td nz-td>{{data.owner}}</td>
+      <td nz-td>{{data.sourceType}}</td>
+      <td nz-td>{{data.inputTime | date: 'yyyy-MM-dd'}}</td>
+
+    </tr>
+    </tbody>
+  </nz-table>
+</div>

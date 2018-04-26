@@ -1,0 +1,64 @@
+
+@import "../../../assets/styles/common";
+@import "../../../assets/styles/mixin";
+
+.main-container {
+  @extend .full-screen;
+  overflow: hidden;
+
+  > .header {
+    display: flex;
+    align-items: center;
+
+    width: $max-percent;
+    height: 45px;
+
+    .logo {
+      width: 200px;
+      height: $max-percent;
+      background-color: $primary-color;
+    }
+
+    .user-bar {
+      height: $max-percent;
+      width: calc(100% - 200px);
+      background-color: #f2f4f5;
+      @include my-border(#e6e6e6, 1px);
+      border-bottom: 1px solid #dddddd;
+    }
+  }
+
+  > .body {
+    display: flex;
+    align-items: center;
+
+    width: $max-percent;
+    height: calc(100% - 45px);
+
+    .menu {
+      width: 200px;
+      height: $max-percent;
+      background-color: #404040;
+    }
+
+    .content {
+      width: calc(100% - 200px);
+      height: $max-percent;
+
+      > .navigation {
+        height: 40px;
+        width: $max-percent;
+        border-bottom: 1px solid #dddddd;
+        padding: 10px 15px
+      }
+
+      > .router-content {
+        width: $max-percent;
+        height: calc(100% - 40px);
+        padding: 0 15px;
+        overflow: auto;
+      }
+    }
+  }
+
+}

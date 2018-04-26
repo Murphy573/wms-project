@@ -1,0 +1,14 @@
+<div class="user-bar">
+  <div (click)="logOut();"><i class="anticon anticon-poweroff"></i>&nbsp;&nbsp;退出</div>
+  <div>
+    <nz-dropdown [nzPlacement]="'bottomCenter'" [nzTrigger]="'click'">
+      <a href class="ant-dropdown-link" nz-dropdown>
+        {{userInfo?.account}} <i class="anticon anticon-down"></i>
+      </a>
+      <ul nz-menu>
+        <li nz-menu-item (click)="navigator();">个人信息</li>
+        <li nz-menu-item  (click)="openUpdatePasswordModal(); ">修改密码</li>
+      </ul>
+    </nz-dropdown>
+  </div>
+</div>

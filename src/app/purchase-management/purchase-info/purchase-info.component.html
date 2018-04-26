@@ -1,0 +1,283 @@
+<div nz-col [nzOffset]="2" [nzSm]="20" class="form-padding">
+  <form nz-form [formGroup]="PurchasingInfoVO" *ngIf="PurchasingInfoVO" (ngSubmit)="submitForm($event)">
+    <!--<div nz-row formGroupName="PurchasingInfoVO">-->
+      <div nz-form-item nz-row>
+        <div nz-form-label nz-col [nzSpan]="4">
+          <label nz-form-item-required>
+            采购名称
+          </label>
+        </div>
+        <div nz-col [nzSpan]="5" nz-form-control [nzValidateStatus]="getFormControl('purchaseName')" nzHasFeedback>
+          <nz-input formControlName="purchaseName" [nzType]="'text'" [nzPlaceHolder]="'请输入采购名称'" [nzSize]="'large'" [nzDisabled]="!!_purchaseBatch">
+          </nz-input>
+          <div nz-form-explain *ngIf="getFormControl('purchaseName').dirty&&getFormControl('purchaseName').hasError('required')">采购名称不能为空!</div>
+        </div>
+
+        <div nz-form-label nz-col [nzSpan]="3">
+          <label>
+            配置
+          </label>
+        </div>
+        <div nz-col [nzSpan]="5" nz-form-control>
+          <nz-input formControlName="configuration" [nzType]="'text'" [nzPlaceHolder]="'请输入配置'" [nzSize]="'large'">
+          </nz-input>
+        </div>
+
+      </div>
+
+      <div nz-form-item nz-row >
+        <div nz-form-label nz-col [nzSpan]="4">
+          <label>采购型号</label>
+        </div>
+        <div nz-col [nzSpan]="5" nz-form-control [nzValidateStatus]="getFormControl('pattern')" nzHasFeedback>
+          <nz-input formControlName="pattern" [nzType]="'text'" [nzPlaceHolder]="'请输入采购型号'" [nzSize]="'large'">
+          </nz-input>
+          <div nz-form-explain *ngIf="getFormControl('pattern').dirty&&getFormControl('pattern').hasError('required')">采购型号不能为空!</div>
+        </div>
+
+        <div nz-form-label nz-col [nzSpan]="3">
+          <label>
+           版本号
+          </label>
+        </div>
+        <div nz-col [nzSpan]="5" nz-form-control>
+          <nz-input formControlName="version" [nzType]="'text'" [nzPlaceHolder]="'请输入版本号'" [nzSize]="'large'">
+          </nz-input>
+        </div>
+      </div>
+
+      <div nz-form-item nz-row >
+        <div nz-form-label nz-col [nzSpan]="4">
+          <label nz-form-item-required>采购类别</label>
+        </div>
+      <div nz-form-control nz-col [nzSpan]="4" [nzValidateStatus]="getFormControl('typeId')">
+        <nz-select  [nzSize]="'large'" formControlName="typeId" [nzDisabled]="!!_purchaseBatch">
+          <nz-option [nzLabel]="'请选择采购类别'" [nzValue]="''"></nz-option>
+          <nz-option *ngFor="let purchaseTypes of purchaseTypeList" [nzLabel]="purchaseTypes.typeName" [nzValue]="purchaseTypes.typeId"></nz-option>
+        </nz-select>
+        <div nz-form-explain *ngIf="getFormControl('typeId').dirty&&getFormControl('typeId').hasError('required')">采购类别不能为空!</div>
+      </div>
+      <div nz-form-label nz-col [nzSpan]="6">
+        <label>供应商是否在西安</label>
+      </div>
+      <div nz-form-control nz-col [nzSpan]="4" formGroupName="supplierInfoVO">
+        <nz-radio-group formControlName="isXiAn">
+          <label nz-radio [nzValue]="2">
+            <span>否</span>
+          </label>
+          <label nz-radio [nzValue]="1">
+            <span>是</span>
+          </label>
+        </nz-radio-group>
+      </div>
+    </div>
+
+      <div nz-form-item nz-row>
+        <div nz-form-label nz-col [nzSpan]="4">
+          <label nz-form-item-required>
+            采购批次号
+            <span>
+            <nz-tooltip [nzTitle]="'规则: 类别_批次-日期, 如 P_20180117_01-01'">
+              <i nz-tooltip class="anticon anticon-question-circle-o"></i>
+            </nz-tooltip>
+          </span>
+          </label>
+        </div>
+        <div nz-col [nzSpan]="5" nz-form-control [nzValidateStatus]="getFormControl('purchaseBatch')" nzHasFeedback>
+          <nz-input formControlName="purchaseBatch" [nzType]="'text'" [nzPlaceHolder]="'请输入资产采购批次号'" [nzSize]="'large'" [nzDisabled]="!!_purchaseBatch">
+          </nz-input>
+          <div nz-form-explain *ngIf="getFormControl('purchaseBatch').dirty&&getFormControl('purchaseBatch').hasError('required')">采购批次号不能为空!</div>
+        </div>
+        <div nz-form-label nz-col [nzSpan]="5">
+          <label>
+            使用期限
+          </label>
+        </div>
+        <div nz-form-control nz-col [nzSpan]="3">
+          <nz-datepicker formControlName="usePeriod" [nzSize]="'large'" [nzFormat]="'YYYY-MM-DD'" [nzPlaceHolder]="'请选择使用期限'"></nz-datepicker>
+        </div>
+      </div>
+
+
+
+      <div nz-form-item nz-row >
+        <div nz-form-label nz-col [nzSpan]="4">
+          <label nz-form-item-required>数量</label>
+        </div>
+        <div nz-form-control nz-col [nzSpan]="3">
+          <nz-input-number formControlName="amount" [nzMin]="1" [nzSize]="'large'" [nzFormatter]="formatterInt" [nzParser]="parserInt" [nzStep]="1" [nzPlaceHolder]="'请输入采购数量'">
+          </nz-input-number>
+        </div>
+        <div nz-form-label nz-col [nzSpan]="7">
+          <label nz-form-item-required>单价</label>
+        </div>
+        <div nz-form-control nz-col [nzSpan]="3">
+          <nz-input-number formControlName="purchasePrice" [nzMin]="1" [nzSize]="'large'" [nzStep]="1" [nzPlaceHolder]="'请输入采购单价'"></nz-input-number>
+          元/个
+        </div>
+      </div>
+
+      <div nz-form-item nz-row >
+        <div nz-form-label nz-col [nzSpan]="4">
+          <label>税点</label>
+        </div>
+        <div nz-form-control nz-col [nzSpan]="4">
+          <!--<nz-radio-group>
+            <label nz-radio [nzValue]="'2'">
+              <span>否</span>
+            </label>
+            <label nz-radio [nzValue]="'1'">
+              <span>是</span>
+            </label>
+          </nz-radio-group>-->
+          <nz-input-number formControlName="taxPoint" [nzMin]="0" [nzMax]="100" [nzSize]="'large'" [nzStep]="0.1" [nzPlaceHolder]="'请输入税点'">
+          </nz-input-number>%
+        </div>
+        <div nz-form-label nz-col [nzSpan]="6">
+          <label>共计</label>
+        </div>
+        <div nz-form-control nz-col [nzSpan]="4">
+          {{getFormControl('amount').value * (getFormControl('purchasePrice').value+getFormControl('taxPoint').value/100)}}元
+        </div>
+      </div>
+
+      <div nz-form-item nz-row >
+        <div nz-form-label nz-col [nzSpan]="4">
+          <label nz-form-item-required>结算方式</label>
+        </div>
+        <div nz-form-control nz-col [nzSpan]="4" formGroupName="supplierInfoVO">
+          <nz-select  [nzSize]="'large'" formControlName="paymentMethodId">
+            <nz-option [nzLabel]="'请选择结算方式'" [nzValue]="''"></nz-option>
+            <nz-option *ngFor="let paymentMethods of paymentMethodList" [nzLabel]="paymentMethods.paymentMethodName" [nzValue]="paymentMethods.paymentMethodId"></nz-option>
+          </nz-select>
+        </div>
+        <div nz-form-label nz-col [nzSpan]="5">
+          <label nz-form-item-required>付款周期</label>
+        </div>
+        <div nz-form-control nz-col [nzSpan]="4" formGroupName="supplierInfoVO">
+          <nz-select  [nzSize]="'large'" formControlName="paymentPeriodId">
+            <nz-option [nzLabel]="'请选择付款周期'" [nzValue]="''"></nz-option>
+            <nz-option *ngFor="let paymentPeriods of paymentPeriodList" [nzLabel]="paymentPeriods.paymentPeriodName" [nzValue]="paymentPeriods.paymentPeriodId"></nz-option>
+          </nz-select>
+        </div>
+      </div>
+
+    <div nz-form-item nz-row >
+      <div nz-form-label nz-col [nzSpan]="4">
+        <label nz-form-item-required>采购人</label>
+      </div>
+      <div nz-form-control nz-col [nzSpan]="4">
+        <nz-input formControlName="purchaser" [nzType]="'text'" [nzSize]="'large'">
+        </nz-input>
+      </div>
+      <div nz-form-label nz-col [nzSpan]="5">
+        <label>采购时间</label>
+      </div>
+      <div nz-form-control nz-col [nzSpan]="4">
+        <nz-datepicker formControlName="purchaserTime" [nzSize]="'large'" [nzFormat]="'YYYY-MM-DD'" [nzPlaceHolder]="'请选择采购时间'"></nz-datepicker>
+      </div>
+    </div>
+
+     <!-- <div nz-form-item nz-row>
+        <div nz-form-label nz-col [nzSpan]="4">
+          <label>验收报告</label>
+        </div>
+        <div nz-form-control nz-col [nzSpan]="6">
+            <nz-upload
+                    [(nzFileList)]="fileList"
+                    [nzBeforeUpload]="beforeUpload">
+              <button nz-button>
+                <i class="anticon anticon-upload"></i><span>上传文件</span>
+              </button>
+            </nz-upload>
+        </div>
+      </div>-->
+
+
+      <div nz-form-item nz-row >
+        <div nz-form-label nz-col [nzSpan]="4">
+          <label nz-form-item-required>供应商</label>
+        </div>
+        <div nz-form-control nz-col [nzSpan]="4" formGroupName="supplierInfoVO">
+          <nz-input  formControlName="supplierName" [nzType]="'text'" [nzSize]="'large'" [nzDisabled]="!!_purchaseBatch">
+          </nz-input>
+
+          <!--<nz-select  formControlName="supplierName"
+                  style="width: 160px;"
+                  [nzPlaceHolder]="'请填写供应商'"
+                  [nzFilter]="false"
+                  (nzSearchChange)="searchChange($event)"
+                  [nzNotFoundContent]="'无法找到'"
+                  nzShowSearch>
+            <nz-option
+                    *ngFor="let option of searchOptions"
+                    [nzLabel]="option[0]"
+                    [nzValue]="option[0]">
+            </nz-option>
+          </nz-select>-->
+        </div>
+
+        <div nz-form-label nz-col [nzSpan]="5">
+          <label>电话</label>
+        </div>
+        <div nz-form-control nz-col [nzSpan]="4" formGroupName="supplierInfoVO">
+          <nz-input formControlName="phone" [nzType]="'text'" [nzSize]="'large'">
+          </nz-input>
+        </div>
+      </div>
+
+      <div nz-form-item nz-row>
+       <!-- <div nz-form-label nz-col [nzSpan]="4">
+          <label>报废日期</label>
+        </div>
+        <div nz-form-control nz-col [nzSpan]="3">
+          <nz-datepicker formControlName="scripTime" [nzSize]="'large'" [nzFormat]="'YYYY-MM-DD'" [nzPlaceHolder]="'请选择报废日期'"></nz-datepicker>
+        </div>-->
+        <div nz-col [nzSpan]="4" nz-form-label>
+          <label>入库日期</label>
+        </div>
+        <div nz-form-control nz-col [nzSpan]="4">
+          <!--{{getFormControl('inputTime')?.value | date: 'yyyy-MM-dd'}}-->
+          <nz-datepicker formControlName="inputTime" [nzSize]="'large'" [nzFormat]="'YYYY-MM-DD'" [nzPlaceHolder]="'请选择入库日期'"></nz-datepicker>
+        </div>
+        <div nz-form-label nz-col [nzSpan]="5">
+          <label>出库日期</label>
+        </div>
+        <div nz-form-control nz-col [nzSpan]="4">
+          <nz-datepicker formControlName="outputTime" [nzSize]="'large'" [nzFormat]="'YYYY-MM-DD'" [nzPlaceHolder]="'请选择出库日期'"></nz-datepicker>
+        </div>
+      </div>
+
+      <div nz-form-item nz-row>
+        <div nz-form-label nz-col [nzSpan]="4">
+          <label>保修期</label>
+        </div>
+        <div nz-form-control nz-col [nzSpan]="4">
+          <nz-input-number formControlName="warrantyPeriod" [nzMin]="1" [nzSize]="'large'" [nzFormatter]="formatterInt" [nzParser]="parserInt" [nzStep]="1"></nz-input-number>月
+        </div>
+      </div>
+
+      <div nz-form-item nz-row>
+        <div nz-col [nzSpan]="4" nz-form-label>
+          <label>备注</label>
+        </div>
+        <div nz-col [nzSpan]="13" nz-form-control [nzValidateStatus]="getFormControl('remark')">
+          <nz-input formControlName="remark" [nzRows]="3" [nzType]="'textarea'" [nzPlaceHolder]="'请输入备注'" [nzSize]="'large'">
+          </nz-input>
+          <div nz-form-explain *ngIf="getFormControl('remark').dirty&&getFormControl('remark').hasError('maxlength')">
+            备注最大长度为{{getFormControl('remark')?.getError('maxlength').requiredLength}}位!
+          </div>
+        </div>
+      </div>
+    <!--</div>-->
+
+    <div nz-row *ngIf="userType==='SYSTEM_ADMIN'">
+      <div nz-col [nzOffset]="6" [nzSpan]="6">
+        <input type="submit" nz-button [nzType]="'primary'" [nzSize]="'large'" [disabled]="PurchasingInfoVO.invalid" value="确定">
+      </div>
+      <div nz-col>
+        <input type="button" nz-button [nzSize]="'large'" routerLink=".." value="取消" [queryParams]="{userType:userType}">
+      </div>
+    </div>
+  </form>
+</div>

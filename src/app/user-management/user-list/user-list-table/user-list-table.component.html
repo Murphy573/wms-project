@@ -1,0 +1,36 @@
+<div nz-row class="full-parent">
+  <nz-table #nzTable [nzAjaxData]="userList"
+            (nzDataChange)="_checkOne();"
+            [(nzPageIndex)]="pageParam.currentPage" (nzPageIndexChange)="queryUserList();"
+            [nzTotal]="pageParam.totalCount" [nzPageSize]="pageParam.pageSize" [nzShowTotal]="true"
+            [nzBordered]="true" [nzSize]="'small'" [nzLoading]="_loading">
+    <thead nz-thead>
+    <tr>
+      <th nz-th nzCheckbox>
+        <label nz-checkbox [(ngModel)]="checkedInfo.allCheck" [nzIndeterminate]="checkedInfo.indeterminate" (ngModelChange)="_checkAll($event)">
+        </label>
+      </th>
+      <th nz-th><span>序号</span></th>
+      <th nz-th><span>账号</span></th>
+      <th nz-th><span>用户类型</span></th>
+      <th nz-th><span>所属部门</span></th>
+      <th nz-th><span>创建时间</span></th>
+    </tr>
+    </thead>
+    <tbody nz-tbody>
+      <tr nz-tbody-tr *ngFor="let data of nzTable.data; let _index = index;">
+        <td nz-td nzCheckbox>
+          <label nz-checkbox [(ngModel)]="data.checked" (ngModelChange)="_checkOne($event)">
+          </label>
+        </td>
+        <td nz-td>
+          {{_index + 1}}
+        </td>
+        <td nz-td><a (click)="toEdit($event, data);">{{data.account}}</a></td>
+        <td nz-td>{{data.userTypeName}}</td>
+        <td nz-td>{{data.departmentName}}</td>
+        <td nz-td>{{data.createTime|date: 'yyyy-MM-dd'}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

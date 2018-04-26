@@ -1,0 +1,15 @@
+<div class="project-material-list full-height">
+  <div>
+    <wms-group-view [gTitle]="'项目分组'" [gData]="projectList"
+                    [gRouter]="'/main/project-material-management/project-management'"
+                    [gDisplay]="groupDisplay" (gSearch)="groupSearch($event)"></wms-group-view>
+  </div>
+  <div>
+    <div class="search-bar">
+      <wms-project-material-search (startSearch)="setSearchParams($event);"></wms-project-material-search>
+    </div>
+    <div class="table-container">
+      <wms-project-material-table [queryParams]="searchParams"></wms-project-material-table>
+    </div>
+  </div>
+</div>

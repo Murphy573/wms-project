@@ -1,0 +1,13 @@
+
+.purchase-list {
+  > .table-container {
+    max-height: calc(100% - 40px - 40px) !important;
+    overflow: auto;
+  }
+
+  > .pagination-container {
+    display: flex;
+    flex-flow: row-reverse nowrap;
+    align-items: center;
+  }
+}

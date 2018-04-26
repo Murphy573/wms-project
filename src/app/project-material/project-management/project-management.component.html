@@ -1,0 +1,68 @@
+<section class="project-management full-height">
+  <div nz-row class="operate-bar" *ngIf='userType=="SYSTEM_ADMIN"'>
+    <div nz-col [nzSpan]="2" class="pull-left">
+      <button nz-button [nzType]="'danger'" [disabled]="selectedProjects.length === 0" (click)="deleteProjects();">
+        <span>删除</span>
+      </button>
+    </div>
+    <div nz-col [nzSpan]="2" class="pull-right">
+      <button nz-button [nzType]="'primary'" (click)="initAddProject();">
+        <span>新增</span>
+      </button>
+    </div>
+  </div>
+  <div nz-row class="table-container" style="padding:10px 0;">
+    <wms-project-list (selected)="refreshSelected($event)" (editData)="initEditProject($event)"></wms-project-list>
+  </div>
+
+  <nz-modal *ngIf="isVisible" [nzVisible]="isVisible"
+            [nzConfirmLoading]="isConfirmLoading"
+            [nzTitle]="isEdit ? '编辑项目信息' : '新增项目信息'" [nzContent]="content"
+            [nzFooter]="footer"
+            (nzOnCancel)="closeModal()"
+
+  >
+    <ng-template #content>
+      <form nz-form>
+        <div nz-form-item nz-row>
+          <div nz-form-label nz-col [nzSm]="6" [nzXs]="24">
+            <label nz-form-item-required>项目名称</label>
+          </div>
+          <div nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback [nzValidateStatus]="ValidateStatus(name.dirty, 'projectName')">
+            <nz-input [nzSize]="'large'" #name="ngModel" [ngModelOptions]="{standalone: true}" [(ngModel)]="projectInfo.projectName" [nzType]="'text'"></nz-input>
+          </div>
+        </div>
+        <div nz-form-item nz-row>
+          <div nz-form-label nz-col [nzSm]="6" [nzXs]="24">
+            <label nz-form-item-required>项目编号</label>
+          </div>
+          <div nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback [nzValidateStatus]="ValidateStatus(name.dirty, 'projectCode')">
+            <nz-input [nzSize]="'large'" #name="ngModel" [ngModelOptions]="{standalone: true}" [(ngModel)]="projectInfo.projectCode" [nzType]="'text'"></nz-input>
+          </div>
+        </div>
+        <div nz-form-item nz-row>
+         <div nz-form-label nz-col [nzSm]="6" [nzXs]="24">
+            <label nz-form-item-required>是否交付</label>
+         </div>
+         <div nz-form-control nz-col [nzSm]="14" [nzXs]="24">
+            <nz-select  [nzSize]="'large'" #name="ngModel" [ngModelOptions]="{standalone: true}" [(ngModel)]="projectInfo.isDeliver">
+              <nz-option [nzLabel]="'请确认是否交付'" [nzValue]="''"></nz-option>
+              <nz-option *ngFor="let project of projectDelivery" [nzLabel]="project.label" [nzValue]="project.code"></nz-option>
+           </nz-select>
+        </div>
+        </div>
+      </form>
+    </ng-template>
+
+    <ng-template #footer>
+      <div nz-row *ngIf='userType=="SYSTEM_ADMIN"'>
+            <button nz-button [nzType]="'default'" [nzSize]="'large'" (click)="closeModal()">
+              返 回
+            </button>
+            <button nz-button [nzType]="'primary'" [nzSize]="'large'" [disabled]=" !projectInfo.projectName || !projectInfo.projectCode || projectInfo.isDeliver===''" (click)="submitForm($event)" [nzLoading]="isConfirmLoading">
+              提 交
+            </button>
+      </div>
+    </ng-template>
+  </nz-modal>
+</section>

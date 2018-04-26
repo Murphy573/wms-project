@@ -1,0 +1,7 @@
+{
+  "/WMS/usmart": {
+    "target": "http://192.168.0.37:8080",
+    "secure": false,
+    "logLevel": "debug"
+  }
+}

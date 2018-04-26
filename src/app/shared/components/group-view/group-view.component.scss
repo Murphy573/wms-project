@@ -1,0 +1,53 @@
+@import "../../../../assets/styles/mixin";
+.border-bottom {
+  border-bottom: 1px solid #dddddd;
+}
+.group-container {
+  width: 200px;
+  @include my-border(#dddddd, 1px);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+
+  .title {
+    position: relative;
+    padding-left: 5px;
+    height: 40px;
+    font: {
+      size: 14px;
+      weight: bold;
+    }
+    line-height: 40px;
+    i {
+      position: absolute;
+      right: 9px;
+      top: 50%;
+      transform: translateY(-50%);
+
+      &:hover {
+        color: #0796E9;
+        transition: all 50ms;
+      }
+    }
+  }
+
+  .search {
+    height: 30px;
+    padding: 1px 2px;
+  }
+
+  .content {
+    max-height: calc(100% - 30px - 40px);
+    overflow-y: auto;
+
+    .item {
+      padding-left: 5px;
+      line-height: 30px;
+    }
+
+    .selected {
+      background-color: #97DDDC;
+      transition: all 100ms;
+    }
+  }
+}

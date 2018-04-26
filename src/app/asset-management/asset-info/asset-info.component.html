@@ -1,0 +1,242 @@
+<div nz-col [nzOffset]="2" [nzSm]="20" class="form-padding">
+  <form nz-form [formGroup]="assetForm" *ngIf="assetForm" (ngSubmit)="submitForm($event)">
+    <div nz-form-item nz-row *ngIf="_assetCode">
+      <div nz-form-label nz-col [nzSpan]="4">
+        <label nz-form-item-required>
+          资产编号
+          <span *ngIf="!_assetCode">
+            <nz-tooltip [nzTitle]="'编号规则: 类型 + 入库顺序, 如0100001,0200001'">
+              <i nz-tooltip class="anticon anticon-question-circle-o"></i>
+            </nz-tooltip>
+          </span>
+        </label>
+      </div>
+      <div nz-col [nzSpan]="13" nz-form-control [nzValidateStatus]="getFormControl('assetCode')" nzHasFeedback>
+        <nz-input formControlName="assetCode" [nzType]="'text'" [nzPlaceHolder]="'请输入资产编号'" [nzSize]="'large'" [nzDisabled]="!!_assetCode">
+        </nz-input>
+        <div nz-form-explain *ngIf="getFormControl('assetCode').dirty&&getFormControl('assetCode').hasError('required')">资产编号不能为空!</div>
+      </div>
+    </div>
+    <div nz-form-item nz-row>
+      <div nz-form-label nz-col [nzSpan]="4">
+        <label nz-form-item-required>资产名称</label>
+      </div>
+      <div nz-col [nzSpan]="13" nz-form-control [nzValidateStatus]="getFormControl('name')" nzHasFeedback>
+        <nz-input formControlName="name" [nzType]="'text'" [nzPlaceHolder]="'请输入资产名称'" [nzSize]="'large'">
+        </nz-input>
+        <div nz-form-explain *ngIf="getFormControl('name').dirty&&getFormControl('name').hasError('required')">资产名称不能为空!</div>
+      </div>
+    </div>
+    <div nz-form-item nz-row>
+      <div nz-form-label nz-col [nzSpan]="4">
+        <label nz-form-item-required>
+          采购批次号
+          <span>
+            <nz-tooltip [nzTitle]="'规则: 类别_批次-日期, 如 P_01-01-20180117'">
+              <i nz-tooltip class="anticon anticon-question-circle-o"></i>
+            </nz-tooltip>
+          </span>
+        </label>
+      </div>
+      <div nz-col [nzSpan]="13" nz-form-control [nzValidateStatus]="getFormControl('purchaseBatch')" nzHasFeedback>
+        <nz-input *ngIf="!!_assetCode" formControlName="purchaseBatch" [nzType]="'text'" [nzPlaceHolder]="'请输入资产采购批次号'" [nzSize]="'large'" [nzDisabled]="!!_assetCode">
+        </nz-input>
+
+        <nz-select
+                *ngIf="!_assetCode"
+                formControlName="purchaseBatch"
+                [nzSize]="'large'"
+                nzAllowClear
+                [nzPlaceHolder]="'请搜索批次号'"
+                [nzFilter]="false"
+                (nzSearchChange)="purchaseBatchSearch($event)"
+                [nzNotFoundContent]="'无法找到'"
+                [nzShowSearch]="true">
+          <nz-option
+                  *ngFor="let purchase of purchaseNames"
+                  [nzLabel]="purchase"
+                  [nzValue]="purchase">
+          </nz-option>
+        </nz-select>
+
+        <div nz-form-explain *ngIf="getFormControl('purchaseBatch').dirty&&getFormControl('purchaseBatch').hasError('required')">资产采购批次号不能为空!</div>
+      </div>
+    </div>
+    <div nz-form-item nz-row>
+      <div nz-form-label nz-col [nzSpan]="4">
+        <label nz-form-item-required>
+          归属
+          <span>
+            <nz-tooltip [nzTitle]="'资产若为闲置状态, 则写明存放地, 如储物柜、库房等'">
+              <i nz-tooltip class="anticon anticon-question-circle-o"></i>
+            </nz-tooltip>
+          </span>
+        </label>
+      </div>
+      <div nz-col [nzSpan]="4" nz-form-control [nzValidateStatus]="getFormControl('owner')" nzHasFeedback>
+        <nz-input formControlName="owner" [nzType]="'text'" [nzPlaceHolder]="'请输入资产归属'" [nzSize]="'large'">
+        </nz-input>
+        <div nz-form-explain *ngIf="getFormControl('owner').dirty&&getFormControl('owner').hasError('required')">资产归属不能为空!</div>
+      </div>
+
+      <div nz-form-label nz-col [nzSpan]="5">
+        <label nz-form-item-required>
+          所属部门
+        </label>
+      </div>
+      <div nz-col [nzSpan]="4" nz-form-control [nzValidateStatus]="getFormControl('ownerDepartment')" nzHasFeedback>
+        <nz-input formControlName="ownerDepartment" [nzType]="'text'" [nzPlaceHolder]="'请输入所属部门'" [nzSize]="'large'">
+        </nz-input>
+        <div nz-form-explain *ngIf="getFormControl('ownerDepartment').dirty&&getFormControl('ownerDepartment').hasError('required')">所属部门不能为空!</div>
+      </div>
+    </div>
+
+    <div nz-form-item nz-row>
+      <div nz-form-label nz-col [nzSpan]="4">
+        <label nz-form-item-required>资产状态</label>
+      </div>
+      <div nz-form-control nz-col [nzSpan]="4">
+        <nz-select  [nzSize]="'large'" formControlName="statusId">
+          <nz-option [nzLabel]="'请选择资产状态'" [nzValue]="''"></nz-option>
+          <nz-option *ngFor="let status of statusList" [nzLabel]="status.statusName" [nzValue]="status.statusId"></nz-option>
+        </nz-select>
+      </div>
+
+      <div nz-form-label nz-col [nzSpan]="5">
+        <label nz-form-item-required>资产来源</label>
+      </div>
+      <div nz-form-control nz-col [nzSpan]="4">
+        <nz-select  [nzSize]="'large'" formControlName="sourceTypeId">
+          <nz-option [nzLabel]="'请选择资产来源'" [nzValue]="''"></nz-option>
+          <nz-option *ngFor="let assetSource of assetSourceTypes" [nzLabel]="assetSource.sourceTypeName" [nzValue]="assetSource.sourceTypeId"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+    <div nz-form-item nz-row>
+      <div nz-form-label nz-col [nzSpan]="4">
+        <label nz-form-item-required>使用期限</label>
+      </div>
+      <div nz-form-control nz-col [nzSpan]="4">
+        <nz-datepicker formControlName="usePeriod" [nzSize]="'large'" [nzFormat]="'YYYY-MM-DD'" [nzPlaceHolder]="'请选择使用到期日'"></nz-datepicker>
+      </div>
+
+      <div nz-form-label nz-col [nzSpan]="5">
+        <label>到期提醒</label>
+      </div>
+      <div nz-form-control nz-col [nzSpan]="4">
+        <nz-input-number formControlName="warningTime" [nzAllowClear]="true" [nzSize]="'large'" [nzFormatter]="formatterInt" [nzParser]="parserInt" [nzStep]="1"></nz-input-number>日
+      </div>
+    </div>
+    <div nz-form-item nz-row>
+      <div nz-form-label nz-col [nzSpan]="4">
+        <label>出库日期</label>
+      </div>
+      <div nz-form-control nz-col [nzSpan]="4">
+        <nz-datepicker formControlName="outputTime" [nzSize]="'large'" [nzFormat]="'YYYY-MM-DD'" [nzPlaceHolder]="'请选择出库日期'"></nz-datepicker>
+      </div>
+
+      <div nz-form-label nz-col [nzSpan]="5">
+        <label>报废日期</label>
+      </div>
+      <div nz-form-control nz-col [nzSpan]="4">
+        <nz-datepicker formControlName="scripTime" [nzSize]="'large'" [nzFormat]="'YYYY-MM-DD'" [nzPlaceHolder]="'请选择报废日期'"></nz-datepicker>
+      </div>
+    </div>
+    <div nz-form-item nz-row *ngIf="_assetCode">
+      <div nz-col [nzSpan]="4" nz-form-label>
+        <label>入库日期</label>
+      </div>
+      <div nz-form-control nz-col [nzSpan]="4">
+        {{getFormControl('inputTime')?.value | date: 'yyyy-MM-dd'}}
+      </div>
+      <div nz-form-label nz-col [nzSpan]="5">
+        <label>
+          版本号
+        </label>
+      </div>
+      <div nz-col [nzSpan]="4" nz-form-control>
+        <nz-input formControlName="version" [nzType]="'text'" [nzPlaceHolder]="'请输入版本号'" [nzSize]="'large'">
+        </nz-input>
+      </div>
+    </div>
+    <div nz-form-item nz-row>
+      <div nz-form-label nz-col [nzSpan]="4">
+        <label>项目名称</label>
+      </div>
+      <div nz-form-control nz-col [nzSpan]="4">
+        <nz-select
+          formControlName="projectName"
+          [nzSize]="'large'"
+          nzAllowClear
+          [nzPlaceHolder]="'请搜索项目名称'"
+          [nzFilter]="false"
+          (nzSearchChange)="projectSearch($event)"
+          [nzNotFoundContent]="'无法找到'"
+          [nzShowSearch]="true">
+          <nz-option
+            *ngFor="let project of projectNames"
+            [nzLabel]="project"
+            [nzValue]="project">
+          </nz-option>
+        </nz-select>
+      </div>
+
+      <div nz-form-label nz-col [nzSpan]="5">
+        <label>
+          卡片编号
+        </label>
+      </div>
+      <div nz-col [nzSpan]="4" nz-form-control>
+        <nz-input formControlName="cardNumber" [nzType]="'text'" [nzPlaceHolder]="'请输入卡片编号'" [nzSize]="'large'">
+        </nz-input>
+      </div>
+
+
+    </div>
+
+    <div nz-form-item nz-row *ngIf="!!_assetCode">
+      <div nz-form-label nz-col [nzSpan]="4">
+        <label>
+          配置
+        </label>
+      </div>
+      <div nz-col [nzSpan]="4" nz-form-control>
+        <nz-input formControlName="configuration" [nzType]="'text'" [nzPlaceHolder]="'请输入配置'" [nzSize]="'large'">
+        </nz-input>
+      </div>
+
+      <div nz-form-label nz-col [nzSpan]="5">
+        <label>
+          采购型号
+        </label>
+      </div>
+      <div nz-col [nzSpan]="4" nz-form-control>
+        <nz-input formControlName="pattern" [nzType]="'text'" [nzPlaceHolder]="'请输入采购型号'" [nzSize]="'large'">
+        </nz-input>
+      </div>
+
+    </div>
+
+
+    <div nz-form-item nz-row>
+      <div nz-col [nzSpan]="4" nz-form-label>
+        <label>备注</label>
+      </div>
+      <div nz-col [nzSpan]="13" nz-form-control [nzValidateStatus]="getFormControl('remark')">
+        <nz-input formControlName="remark" [nzRows]="3" [nzType]="'textarea'" [nzPlaceHolder]="'请输入备注'" [nzSize]="'large'">
+        </nz-input>
+        <div nz-form-explain *ngIf="getFormControl('remark').dirty&&getFormControl('remark').hasError('maxlength')">
+          备注最大长度为{{getFormControl('remark')?.getError('maxlength').requiredLength}}位!
+        </div>
+      </div>
+    </div>
+    <div nz-row *ngIf="userType==='SYSTEM_ADMIN'">
+      <div nz-col [nzOffset]="6" [nzSpan]="6">
+        <input type="submit" nz-button [nzType]="'primary'" [nzSize]="'large'" [disabled]="assetForm.invalid" value="确定">
+      </div>
+      <div nz-col>
+        <input type="button" nz-button [nzSize]="'large'" routerLink=".." value="取消" [queryParams]="{userType:userType}">
+      </div>
+    </div>
+  </form>
+</div>

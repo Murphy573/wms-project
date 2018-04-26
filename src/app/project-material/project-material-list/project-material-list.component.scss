@@ -1,0 +1,16 @@
+
+.project-material-list {
+  display: grid;
+  grid-template-columns: 200px auto;
+  grid-template-rows: auto;
+  grid-column-gap: 15px;
+
+  > div:nth-child(1) {
+    padding: 5px 0 2px 0;
+  }
+
+  .table-container {
+    max-height: calc(100% - 40px) !important;
+    overflow: auto;
+  }
+}

@@ -1,0 +1,23 @@
+@import "../../../assets/styles/common";
+
+.user-bar {
+  @extend .full-parent;
+  //#0093eb
+
+  display: flex;
+  flex-flow: row nowrap;
+  flex-direction: row-reverse;
+  align-items: center;
+  color: $primary-color;
+
+  > div:nth-child(1){
+    margin-right: 20px;
+    &:hover {
+      cursor: pointer;
+      color: blue;
+    }
+  }
+  > div:nth-child(2) {
+    margin-right: 30px;
+  }
+}

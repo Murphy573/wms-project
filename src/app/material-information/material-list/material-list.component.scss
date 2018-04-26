@@ -1,0 +1,29 @@
+.material-list {
+  > .table-container {
+    max-height: calc(100% - 40px - 40px) !important;
+    overflow: auto;
+  }
+
+  > .pagination-container {
+    display: flex;
+    flex-flow: row-reverse nowrap;
+    align-items: center;
+  }
+}
+
+/*.chart {
+  display: grid;
+  grid-template-rows: auto;
+  grid-column-gap: 15px;
+  grid-template-columns: 1fr 1fr;
+
+  > div.contentChart {
+    width: 700px;
+    height: 300px;
+  }
+}*/
+
+div.contentChart {
+  width: 1050px;
+  height: 400px;
+}

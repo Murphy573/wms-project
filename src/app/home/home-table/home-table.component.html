@@ -1,0 +1,102 @@
+<section class="home-table full-screen">
+  <div class="search-bar">
+    <form nz-form [formGroup]="searchGroup" [nzLayout]="'inline'"  (ngSubmit)="_search()" novalidate>
+      <div nz-row [nzGutter]="20">
+        <div nz-col [nzSpan]="3">
+          <div nz-row>
+            <div nz-form-control nz-col [nzSpan]="24">
+              <nz-input [nzSize]="'small'" [nzPlaceHolder]="'资产名称'" formControlName="name"></nz-input>
+            </div>
+          </div>
+        </div>
+        <div nz-col [nzSpan]="3">
+          <div nz-row>
+            <div nz-form-control nz-col [nzSpan]="24">
+              <nz-input [nzSize]="'small'" [nzPlaceHolder]="'资产编号'" formControlName="assetCode"></nz-input>
+            </div>
+          </div>
+        </div>
+        <div nz-col [nzSpan]="3">
+          <div nz-row>
+            <div nz-form-control nz-col [nzSpan]="24">
+              <nz-input [nzSize]="'small'" [nzPlaceHolder]="'借出人'" formControlName="owner"></nz-input>
+            </div>
+          </div>
+        </div>
+        <div nz-col [nzSpan]="3">
+          <div nz-row>
+            <div nz-form-control nz-col [nzSpan]="24">
+              <nz-select  [nzSize]="'small'" formControlName="typeId">
+                <nz-option [nzLabel]="'全部类型'" [nzValue]="''"></nz-option>
+                <nz-option *ngFor="let type of typeList" [nzLabel]="type?.typeName" [nzValue]="type?.typeId"></nz-option>
+              </nz-select>
+            </div>
+          </div>
+        </div>
+        <div nz-col [nzSpan]="6">
+          <div nz-form-item nz-row [nzGutter]="0">
+            <div nz-form-control>
+              <div nz-col [nzSpan]="11">
+                <div nz-row>
+                  <div nz-form-control>
+                    <nz-datepicker formControlName="startTime" [nzSize]="'small'" [nzFormat]="'YYYY-MM-DD'" [nzPlaceHolder]="'起始日期'"></nz-datepicker>
+                  </div>
+                </div>
+              </div>
+              <div nz-col [nzSpan]="1">
+                <p nz-form-split>-</p>
+              </div>
+              <div nz-col [nzSpan]="11">
+                <div nz-row>
+                  <div>
+                    <div nz-form-control>
+                      <nz-datepicker formControlName="endTime" [nzSize]="'small'" [nzFormat]="'YYYY-MM-DD'"  [nzPlaceHolder]="'结束日期'"></nz-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div nz-col [nzSpan]="2">
+          <div nz-row>
+            <div nz-form-control nz-col [nzSpan]="24">
+              <button nz-button [nzType]="'primary'" [nzSize]="'small'">搜索</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="table-container full-width">
+    <nz-table #nzTable [nzDataSource]="borrowList"
+              [(nzPageIndex)]="pageParam.currentPage"
+              [nzTotal]="borrowList ? borrowList.length : 0" [nzPageSize]="pageParam.pageSize" [nzShowTotal]="true"
+              [nzBordered]="true" [nzSize]="'small'">
+      <thead nz-thead>
+      <tr>
+        <th nz-th><span>序号</span></th>
+        <th nz-th><span>资产名称</span></th>
+        <th nz-th><span>资产编号</span></th>
+        <th nz-th><span>类别</span></th>
+        <th nz-th><span>借出人</span></th>
+        <th nz-th><span>借出时间</span></th>
+        <th nz-th><span>还回时间</span></th>
+      </tr>
+      </thead>
+      <tbody nz-tbody>
+        <tr nz-tbody-tr *ngFor="let data of nzTable.data; let _index = index;">
+          <td nz-td>
+            {{_index + 1}}
+          </td>
+          <td nz-td>{{data.assetName}}</td>
+          <td nz-td>{{data.assetCode}}</td>
+          <td nz-td>{{data.assetTypeName}}</td>
+          <td nz-td>{{data.name}}</td>
+          <td nz-td>{{data.borrowTime|date: 'yyyy-MM-dd'}}</td>
+          <td nz-td>{{data.returnTime|date: 'yyyy-MM-dd'}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</section>

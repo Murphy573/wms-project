@@ -1,0 +1,19 @@
+<div class="group-container full-height">
+  <div class="title full-width text-ellipsis border-bottom">
+    {{gTitle}}
+    <i *ngIf="!!gRouter" class="anticon anticon-setting cursor-pointer" (click)="navigationGroup($event);"></i>
+  </div>
+  <div class="search full-width border-bottom">
+    <nz-input [nzType]="'search'" [(ngModel)]="_searchValue" (nzOnSearch)="search()"></nz-input>
+  </div>
+  <div class="content full-width">
+    <ul>
+      <li [ngClass]="{'selected': item === selected}"
+          (click)="select(item);"
+          class="item text-ellipsis border-bottom cursor-pointer"
+          *ngFor="let item of _searchData;trackBy: trackByFn;">
+        {{item[gDisplay]}}
+      </li>
+    </ul>
+  </div>
+</div>

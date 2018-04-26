@@ -1,0 +1,133 @@
+<div nz-col [nzOffset]="2" [nzSm]="20" style="margin-top: 30px;">
+  <form nz-form [formGroup]="OfficeSupForm" *ngIf="OfficeSupForm" (ngSubmit)="submitForm($event)">
+    <div nz-form-item nz-row>
+      <div nz-form-label nz-col [nzSpan]="4">
+        <label nz-form-item-required>
+          采购批次号
+          <span>
+            <nz-tooltip [nzTitle]="'规则: 类别_批次-日期, 如 P_01-01-20180117'">
+              <i nz-tooltip class="anticon anticon-question-circle-o"></i>
+            </nz-tooltip>
+          </span>
+        </label>
+      </div>
+      <div nz-col [nzSpan]="13" nz-form-control [nzValidateStatus]="getFormControl('purchaseBatch')" nzHasFeedback>
+        <nz-input *ngIf="!!_officeSupId" formControlName="purchaseBatch" [nzType]="'text'" [nzPlaceHolder]="'请输入资产采购批次号'" [nzSize]="'large'" [nzDisabled]="!!_officeSupId">
+        </nz-input>
+        <nz-select
+                *ngIf="!_officeSupId"
+                formControlName="purchaseBatch"
+                [nzSize]="'large'"
+                nzAllowClear
+                [nzPlaceHolder]="'请搜索批次号'"
+                [nzFilter]="false"
+                (nzSearchChange)="officeSupPurchaseBatchSearch($event)"
+                [nzNotFoundContent]="'无法找到'"
+                [nzShowSearch]="true">
+          <nz-option
+                  *ngFor="let purchase of purchaseNames"
+                  [nzLabel]="purchase"
+                  [nzValue]="purchase">
+          </nz-option>
+        </nz-select>
+        <div nz-form-explain *ngIf="getFormControl('purchaseBatch').dirty&&getFormControl('purchaseBatch').hasError('required')">资产采购批次号不能为空!</div>
+      </div>
+    </div>
+    <div nz-form-item nz-row>
+      <div nz-form-label nz-col [nzSpan]="4">
+        <label nz-form-item-required>负责人</label>
+      </div>
+      <div nz-col [nzSpan]="13" nz-form-control [nzValidateStatus]="getFormControl('chargePerson')" nzHasFeedback>
+        <nz-input formControlName="chargePerson" [nzType]="'text'" [nzPlaceHolder]="'请输入负责人'" [nzSize]="'large'">
+        </nz-input>
+        <div nz-form-explain *ngIf="getFormControl('chargePerson').dirty&&getFormControl('chargePerson').hasError('required')">负责人不能为空!</div>
+      </div>
+    </div>
+    <div nz-form-item nz-row>
+      <div nz-form-label nz-col [nzSpan]="4">
+        <label nz-form-item-required>资产状态</label>
+      </div>
+      <div nz-form-control nz-col [nzSpan]="4">
+        <nz-select  [nzSize]="'large'" formControlName="statusId">
+          <nz-option [nzLabel]="'请选择资产状态'" [nzValue]="''"></nz-option>
+          <nz-option *ngFor="let status of statusList" [nzLabel]="status.statusName" [nzValue]="status.statusId"></nz-option>
+        </nz-select>
+      </div>
+
+      <div nz-form-label nz-col [nzSpan]="5">
+        <label nz-form-item-required>资产来源</label>
+      </div>
+      <div nz-form-control nz-col [nzSpan]="4">
+        <nz-select  [nzSize]="'large'" formControlName="sourceTypeId">
+          <nz-option [nzLabel]="'请选择资产来源'" [nzValue]="''"></nz-option>
+          <nz-option *ngFor="let assetSource of assetSourceTypes" [nzLabel]="assetSource.sourceTypeName" [nzValue]="assetSource.sourceTypeId"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+    <div nz-form-item nz-row>
+      <div nz-form-label nz-col [nzSpan]="4">
+        <label>入库日期</label>
+      </div>
+      <div nz-form-control nz-col [nzSpan]="4">
+        <nz-datepicker formControlName="inputTime" [nzSize]="'large'" [nzFormat]="'YYYY-MM-DD'" [nzPlaceHolder]="'请选择入库日期'"></nz-datepicker>
+      </div>
+      <div nz-form-label nz-col [nzSpan]="5">
+        <label>报废日期</label>
+      </div>
+      <div nz-form-control nz-col [nzSpan]="4">
+        <nz-datepicker formControlName="scripTime" [nzSize]="'large'" [nzFormat]="'YYYY-MM-DD'" [nzPlaceHolder]="'请选择报废日期'"></nz-datepicker>
+      </div>
+    </div>
+    <div nz-form-item nz-row>
+      <div nz-form-label nz-col [nzSpan]="4">
+        <label>项目名称</label>
+      </div>
+      <div nz-form-control nz-col [nzSpan]="4">
+        <!--<nz-input formControlName="projectName" [nzType]="'text'" [nzPlaceHolder]="'请输入项目名称'" [nzSize]="'large'">
+        </nz-input>-->
+        <nz-select
+                formControlName="projectName"
+                [nzSize]="'large'"
+                nzAllowClear
+                [nzPlaceHolder]="'请搜索项目名称'"
+                [nzFilter]="false"
+                (nzSearchChange)="officeSupProjectSearch($event)"
+                [nzNotFoundContent]="'无法找到'"
+                [nzShowSearch]="true">
+          <nz-option
+                  *ngFor="let project of projectNames"
+                  [nzLabel]="project"
+                  [nzValue]="project">
+          </nz-option>
+        </nz-select>
+      </div>
+
+      <div nz-form-label nz-col [nzSpan]="5">
+        <label>库存提醒</label>
+      </div>
+      <div nz-form-control nz-col [nzSpan]="4">
+        <nz-input-number formControlName="warningNumber" [nzAllowClear]="true" [nzSize]="'large'" [nzFormatter]="formatterInt" [nzParser]="parserInt" [nzStep]="1"></nz-input-number>
+      </div>
+    </div>
+    <div nz-form-item nz-row>
+      <div nz-col [nzSpan]="4" nz-form-label>
+        <label>备注</label>
+      </div>
+      <div nz-col [nzSpan]="13" nz-form-control [nzValidateStatus]="getFormControl('remark')">
+        <nz-input formControlName="remark" [nzRows]="3" [nzType]="'textarea'" [nzPlaceHolder]="'请输入备注'" [nzSize]="'large'">
+        </nz-input>
+        <div nz-form-explain *ngIf="getFormControl('remark').dirty&&getFormControl('remark').hasError('maxlength')">
+          备注最大长度为{{getFormControl('remark')?.getError('maxlength').requiredLength}}位!
+        </div>
+      </div>
+    </div>
+    <div nz-row *ngIf="userType==='SYSTEM_ADMIN'">
+      <div nz-col [nzOffset]="6" [nzSpan]="6">
+        <input type="submit" nz-button [nzType]="'primary'" [nzSize]="'large'" [disabled]="OfficeSupForm.invalid" value="确定">
+      </div>
+      <div nz-col>
+        <input type="button" nz-button [nzSize]="'large'" routerLink=".." value="取消" [queryParams]="{userType:userType}">
+      </div>
+    </div>
+  </form>
+</div>

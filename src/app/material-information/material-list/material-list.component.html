@@ -1,0 +1,76 @@
+<div nz-row class="asset-list full-parent">
+
+      <div nz-row class="search-bar">
+    <form nz-form [formGroup]="materialSearchGroup" [nzLayout]="'inline'"  (ngSubmit)="_search('search')" novalidate>
+      <div nz-row [nzGutter]="20">
+        <div nz-col [nzSpan]="3">
+          <div nz-row>
+            <div nz-form-control nz-col [nzSpan]="24">
+              <nz-input [nzSize]="'small'" [nzPlaceHolder]="'物资名称'" formControlName="materialName"></nz-input>
+            </div>
+          </div>
+        </div>
+        <div nz-col [nzSpan]="3">
+          <div nz-row>
+            <div nz-form-control nz-col [nzSpan]="24">
+              <nz-input [nzSize]="'small'" [nzPlaceHolder]="'供应商'" formControlName="supplierName"></nz-input>
+            </div>
+          </div>
+        </div>
+        <div nz-col [nzSpan]="2">
+          <div nz-row>
+            <div nz-form-control nz-col [nzSpan]="24">
+              <button nz-button [nzType]="'primary'" [nzSize]="'small'">搜索</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+      <div nz-row class="table-container full-width">
+    <nz-table #nzTable [nzAjaxData]="materialList"
+              [(nzPageIndex)]="pageParam.currentPage" (nzPageIndexChange)="queryMaterialList();"
+              [nzTotal]="pageParam.totalCount" [nzPageSize]="pageParam.pageSize" [nzShowTotal]="true"
+              [nzBordered]="true" [nzSize]="'small'" [nzLoading]="_loading">
+      <thead nz-thead>
+      <tr>
+        <th nz-th><span>序号</span></th>
+        <th nz-th><span>名称</span></th>
+        <th nz-th><span>供应商</span></th>
+        <th nz-th><span>联系方式</span></th>
+        <th nz-th><span>付款周期</span></th>
+        <!--<th nz-th><span>价格范围（元）</span></th>-->
+        <th nz-th><span>结算方式</span></th>
+        <!--<th nz-th><span>主要产品</span></th>-->
+        <th nz-th><span>价格折线</span></th>
+      </tr>
+      </thead>
+      <tbody nz-tbody>
+      <tr nz-tbody-tr *ngFor="let data of nzTable.data; let _index = index;">
+        <td nz-td>
+          {{_index + 1}}
+        </td>
+        <td nz-td>{{data.materialName}}</td>
+        <td nz-td>{{data.supplierName}}</td>
+        <td nz-td>{{data.phone}}</td>
+        <td nz-td>{{data.paymentPeriodName}}</td>
+        <td nz-td>{{data.paymentMethodName}}</td>
+        <td nz-td><a (click)="openLineChartModal(data)">折线图</a></td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </div>
+
+  <nz-modal *ngIf="lineChatModal" [nzVisible]="lineChatModal" [nzWidth]=1150
+            (nzOnCancel)="closeLineChartModal()" [nzContent]="lineChartContent" [nzFooter]=false
+
+  >
+    <ng-template #lineChartContent>
+     <!-- <section class="chart full-screen">-->
+        <div class="contentChart materialChart" #contentChart></div>
+      <!--</section>-->
+    </ng-template>
+
+  </nz-modal>
+</div>
